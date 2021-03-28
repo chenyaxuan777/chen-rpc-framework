@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
  * @author Chen
  * @create 2021-03-26 22:27
  */
-interface ServiceRegistry {
+public interface ServiceRegistry {
     /**
      * 注册服务到注册中心
      * @param rpcServiceName    完整的服务名称（class name+group+version）
