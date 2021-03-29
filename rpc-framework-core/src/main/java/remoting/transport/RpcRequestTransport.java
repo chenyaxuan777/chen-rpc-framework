@@ -1,4 +1,4 @@
-package transport;
+package remoting.transport;
 
 import remoting.dto.RpcRequest;
 
