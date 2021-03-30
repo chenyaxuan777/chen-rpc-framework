@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
+ * 初始化和关闭BootStrap对象
  * @author Chen
  * @create 2021-03-28 10:47
  */
