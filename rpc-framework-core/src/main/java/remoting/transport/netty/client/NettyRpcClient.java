@@ -2,6 +2,8 @@ package remoting.transport.netty.client;
 
 import enums.CompressTypeEnum;
 import enums.SerializationTypeEnum;
+import extension.ExtensionLoader;
+import factory.SingletonFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -19,6 +21,7 @@ import remoting.dto.RpcMessage;
 import remoting.dto.RpcRequest;
 import remoting.dto.RpcResponse;
 import remoting.transport.RpcRequestTransport;
+import remoting.transport.netty.client.codec.RpcMessageDecoder;
 import remoting.transport.netty.client.codec.RpcMessageEncoder;
 
 import java.net.InetSocketAddress;
@@ -56,11 +59,14 @@ public final class NettyRpcClient implements RpcRequestTransport {
                         p.addLast(new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS));
                         // 编码器、解码器
                         p.addLast(new RpcMessageEncoder());
-                        p.addLast();
+                        p.addLast(new RpcMessageDecoder());
                         // 业务handler
                         p.addLast(new NettyRpcClientHandler());
                     }
                 });
+        this.serviceDiscovery = ExtensionLoader.getExtensionLoader(ServiceDiscovery.class).getExtension("zk");
+        this.unprocessedRequests = SingletonFactory.getInstance(UnprocessedRequests.class);
+        this.channelProvider = SingletonFactory.getInstance(ChannelProvider.class);
     }
 
     /**

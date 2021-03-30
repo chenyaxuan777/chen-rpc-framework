@@ -24,8 +24,10 @@ public class RpcConstants {
     public static final byte HEARTBEAT_REQUEST_TYPE = 3;
     //pong
     public static final byte HEARTBEAT_RESPONSE_TYPE = 4;
+    // Rpc传输协议中header长度，header包括魔数，版本号，数据域长度，消息类型，压缩格式，序列化格式，请求id
     public static final int HEAD_LENGTH = 16;
     public static final String PING = "ping";
     public static final String PONG = "pong";
+    // 数据包最大长度
     public static final int MAX_FRAME_LENGTH = 8 * 1024 * 1024;
 }
