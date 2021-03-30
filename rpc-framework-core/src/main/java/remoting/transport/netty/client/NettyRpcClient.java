@@ -19,6 +19,7 @@ import remoting.dto.RpcMessage;
 import remoting.dto.RpcRequest;
 import remoting.dto.RpcResponse;
 import remoting.transport.RpcRequestTransport;
+import remoting.transport.netty.client.codec.RpcMessageEncoder;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
@@ -53,9 +54,10 @@ public final class NettyRpcClient implements RpcRequestTransport {
                         ChannelPipeline p = ch.pipeline();
                         //如果15秒内未向服务器发送数据，则发送心跳请求
                         p.addLast(new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS));
-                        //                        //编码解码器明天写
-
-                        //
+                        // 编码器、解码器
+                        p.addLast(new RpcMessageEncoder());
+                        p.addLast();
+                        // 业务handler
                         p.addLast(new NettyRpcClientHandler());
                     }
                 });
