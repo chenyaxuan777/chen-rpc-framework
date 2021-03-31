@@ -46,6 +46,7 @@ public class RpcClientProxy implements InvocationHandler {
 
     /**
      * 获取代理对象
+     * @param clazz 服务接口.class
      * @param <T>
      * @return
      */
@@ -79,5 +80,10 @@ public class RpcClientProxy implements InvocationHandler {
             CompletableFuture<RpcResponse<Object>> completableFuture = (CompletableFuture<RpcResponse<Object>>) rpcRequestTransport.sendRpcRequest(rpcRequest);
             rpcResponse = completableFuture.get();
         }
+//        if (rpcRequestTransport instanceof SocketRpcClient) {
+//            rpcResponse = (RpcResponse<Object>) rpcRequestTransport.sendRpcRequest(rpcRequest);
+//        }
+
+        return null;
     }
 }

@@ -6,8 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="rpc-framework-core" />
         <module name="rpc-framework-common" />
+        <module name="rpc-framework-core" />
       </profile>
     </annotationProcessing>
   </component>
