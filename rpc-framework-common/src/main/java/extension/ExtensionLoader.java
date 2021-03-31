@@ -14,12 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
+ * Protocol protocol = ExtensionLoader.getExtensionLoader(Protocol.class).getExtension("myProtocol");
  * @author cyx
  * @create 2021-03-30 16:36
  */
 @Slf4j
 public final class ExtensionLoader<T> {
-
+    // 指定目录（该目录下放置配置文件）
     private static final String SERVICE_DIRECTORY = "META-INF/extensions/";
     // ExtensionLoader的缓存
     private static final Map<Class<?>, ExtensionLoader<?>> EXTENSION_LOADERS = new ConcurrentHashMap<>();
@@ -28,6 +29,7 @@ public final class ExtensionLoader<T> {
 
     private final Class<?> type;
     private final Map<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<>();
+    //
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<>();
 
     private ExtensionLoader(Class<?> type) {
@@ -91,6 +93,7 @@ public final class ExtensionLoader<T> {
 
     private T createExtension(String name) {
         // load all extension classes of type T from file and get specific one by name
+        // 从文件中加载T类型的所有扩展类，并按名称获取特定的扩展类
         Class<?> clazz = getExtensionClasses().get(name);
         if (clazz == null) {
             throw new RuntimeException("No such extension of name " + name);
@@ -109,6 +112,7 @@ public final class ExtensionLoader<T> {
 
     private Map<String, Class<?>> getExtensionClasses() {
         // get the loaded extension class from the cache
+        // 从缓存中加载过的扩展类
         Map<String, Class<?>> classes = cachedClasses.get();
         // double check
         if (classes == null) {
@@ -117,6 +121,7 @@ public final class ExtensionLoader<T> {
                 if (classes == null) {
                     classes = new HashMap<>();
                     // load all extensions from our extensions directory
+                    // 从目录中加载所有行
                     loadDirectory(classes);
                     cachedClasses.set(classes);
                 }
@@ -126,10 +131,12 @@ public final class ExtensionLoader<T> {
     }
 
     private void loadDirectory(Map<String, Class<?>> extensionClasses) {
+        //eg: META-INF/extensions/compress.compress
         String fileName = ExtensionLoader.SERVICE_DIRECTORY + type.getName();
         try {
             Enumeration<URL> urls;
             ClassLoader classLoader = ExtensionLoader.class.getClassLoader();
+            // 将遇到的所有资源文件全部返回，eg:如果引入的jar包也有这个文件，也加载出来META-INF/extensions/compress.compress
             urls = classLoader.getResources(fileName);
             if (urls != null) {
                 while (urls.hasMoreElements()) {
@@ -141,22 +148,26 @@ public final class ExtensionLoader<T> {
             log.error(e.getMessage());
         }
     }
-
+    // 将配置文件中的每一行中的 =右边的 全类名那个都进行加载
+    // 并放入缓存
     private void loadResource(Map<String, Class<?>> extensionClasses, ClassLoader classLoader, URL resourceUrl) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceUrl.openStream(), UTF_8))) {
             String line;
             // read every line
+            // 读取配置文件的每一行
             while ((line = reader.readLine()) != null) {
                 // get index of comment
                 final int ci = line.indexOf('#');
                 if (ci >= 0) {
                     // string after # is comment so we ignore it
+                    // 忽略注释
                     line = line.substring(0, ci);
                 }
                 line = line.trim();
                 if (line.length() > 0) {
                     try {
                         final int ei = line.indexOf('=');
+                        // gzip=github.javaguide.compress.gzip.GzipCompress
                         String name = line.substring(0, ei).trim();
                         String clazzName = line.substring(ei + 1).trim();
                         // our SPI use key-value pair so both of them must not be empty
@@ -173,5 +184,10 @@ public final class ExtensionLoader<T> {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        String str = "ad132";
+        System.out.println(str.indexOf('#'));
     }
 }

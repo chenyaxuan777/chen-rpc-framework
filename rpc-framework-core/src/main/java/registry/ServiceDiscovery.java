@@ -8,7 +8,7 @@ import java.net.InetSocketAddress;
  */
 public interface ServiceDiscovery {
     /**
-     * 根据rpcService 获取远程服务地址
+     * 根据服务名 获取远程服务地址
      * @param rpcServiceName 完整的服务名称（class name+group+version）
      * @return 远程服务地址
      */
