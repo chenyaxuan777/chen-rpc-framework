@@ -28,6 +28,7 @@ public class RpcRequest implements Serializable {
     // 主要应对一个接口多个实现类的情况
     private String group;
 
+    // RpcServiceProperties中各属性组成完整的服务名
     public RpcServiceProperties toRpcProperties() {
         return RpcServiceProperties.builder().serviceName(this.getInterfaceName())
                 .version(this.getVersion())

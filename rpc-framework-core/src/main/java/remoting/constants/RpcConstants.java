@@ -18,11 +18,12 @@ public class RpcConstants {
     //version information，版本信息
     public static final byte VERSION = 1;
     public static final byte TOTAL_LENGTH = 16;
+    // 消息类型 请求、响应、ping、pong
     public static final byte REQUEST_TYPE = 1;
     public static final byte RESPONSE_TYPE = 2;
-    //ping
+    // ping
     public static final byte HEARTBEAT_REQUEST_TYPE = 3;
-    //pong
+    // pong
     public static final byte HEARTBEAT_RESPONSE_TYPE = 4;
     // Rpc传输协议中header长度，header包括魔数，版本号，数据域长度，消息类型，压缩格式，序列化格式，请求id
     public static final int HEAD_LENGTH = 16;

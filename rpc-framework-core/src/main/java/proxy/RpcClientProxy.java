@@ -1,6 +1,9 @@
 package proxy;
 
 import entity.RpcServiceProperties;
+import enums.RpcErrorMessageEnum;
+import enums.RpcResponseCodeEnum;
+import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
 import remoting.dto.RpcRequest;
 import remoting.dto.RpcResponse;
@@ -46,12 +49,15 @@ public class RpcClientProxy implements InvocationHandler {
 
     /**
      * 获取代理对象
+     * eg: HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
+     * helloService这个接口实现类去调用它包含的方法，就是去调用invoke
      * @param clazz 服务接口.class
      * @param <T>
      * @return
      */
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz) {
+        // 类加载器， 当前服务的接口.class数组（其实就是一个数组，然后数组中只有它一个）， 当前类对象
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]{clazz}, this);
     }
 
@@ -84,6 +90,22 @@ public class RpcClientProxy implements InvocationHandler {
 //            rpcResponse = (RpcResponse<Object>) rpcRequestTransport.sendRpcRequest(rpcRequest);
 //        }
 
-        return null;
+        this.check(rpcResponse, rpcRequest);
+        return rpcResponse.getData();
+    }
+
+    // 检查服务调用是否成功
+    private void check(RpcResponse<Object> rpcResponse, RpcRequest rpcRequest) {
+        if (rpcResponse == null) {
+            throw new RpcException(RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE, INTERFACE_NAME + ":" + rpcRequest.getInterfaceName());
+        }
+
+        if (!rpcRequest.getRequestId().equals(rpcResponse.getRequestId())) {
+            throw new RpcException(RpcErrorMessageEnum.REQUEST_NOT_MATCH_RESPONSE, INTERFACE_NAME + ":" + rpcRequest.getInterfaceName());
+        }
+
+        if (rpcResponse.getCode() == null || !rpcResponse.getCode().equals(RpcResponseCodeEnum.SUCCESS.getCode())) {
+            throw new RpcException(RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE, INTERFACE_NAME + ":" + rpcRequest.getInterfaceName());
+        }
     }
 }
