@@ -11,8 +11,8 @@ public interface ServiceProvider {
 
     /**
      *
-     * @param service 服务对象
-     * @param serviceClass 由服务实例对象实现的接口类
+     * @param service 服务对象（服务接口实现类的实例）
+     * @param serviceClass 服务对象实现的接口.class(也即服务接口.class)
      * @param rpcServiceProperties 服务相关的属性
      */
     void addService(Object service, Class<?> serviceClass, RpcServiceProperties rpcServiceProperties);
