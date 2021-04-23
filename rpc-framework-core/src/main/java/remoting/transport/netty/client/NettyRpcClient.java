@@ -102,10 +102,11 @@ public final class NettyRpcClient implements RpcRequestTransport {
         if (channel.isActive()) {
             // 放置未处理的请求
             unprocessedRequests.put(rpcRequest.getRequestId(), resultFuture);
-            RpcMessage rpcMessage = RpcMessage.builder().data(rpcRequest)
-                    .codec(SerializationTypeEnum.PROTOSTUFF.getCode())
-                    .compress(CompressTypeEnum.GZIP.getCode())
-                    .messageType(RpcConstants.REQUEST_TYPE).build();
+            RpcMessage rpcMessage = new RpcMessage();
+            rpcMessage.setData(rpcRequest);
+            rpcMessage.setCodec(SerializationTypeEnum.PROTOSTUFF.getCode());
+            rpcMessage.setCompress(CompressTypeEnum.GZIP.getCode());
+            rpcMessage.setMessageType(RpcConstants.REQUEST_TYPE);
             channel.writeAndFlush(rpcMessage).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
                     log.info("client send message: [{}]", rpcMessage);

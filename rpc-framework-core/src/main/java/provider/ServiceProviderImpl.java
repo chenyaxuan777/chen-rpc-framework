@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ServiceProviderImpl implements ServiceProvider {
 
     /**
-     * key: rpc服务名(interface name + version + group)
+     * key: rpc服务名(interface name + group + version)
      * value: 服务对象
      */
     private final Map<String, Object> serviceMap;
