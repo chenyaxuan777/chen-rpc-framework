@@ -1,6 +1,9 @@
 package proxy;
 
 import entity.RpcServiceProperties;
+import enums.RpcErrorMessageEnum;
+import enums.RpcResponseCodeEnum;
+import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
 import remoting.dto.RpcRequest;
 import remoting.dto.RpcResponse;
@@ -47,7 +50,7 @@ public class RpcClientProxy implements InvocationHandler {
     /**
      * 获取代理对象
      * @param clazz 服务接口.class
-     * @param <T>
+     * @param <T> 接口
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -84,6 +87,21 @@ public class RpcClientProxy implements InvocationHandler {
 //            rpcResponse = (RpcResponse<Object>) rpcRequestTransport.sendRpcRequest(rpcRequest);
 //        }
 
-        return null;
+        this.check(rpcResponse, rpcRequest);
+        return rpcResponse.getData();
+    }
+
+    private void check(RpcResponse<Object> rpcResponse, RpcRequest rpcRequest) {
+        if (rpcResponse == null) {
+            throw new RpcException(RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE, INTERFACE_NAME + ":" + rpcRequest.getInterfaceName());
+        }
+
+        if (!rpcRequest.getRequestId().equals(rpcResponse.getRequestId())) {
+            throw new RpcException(RpcErrorMessageEnum.REQUEST_NOT_MATCH_RESPONSE, INTERFACE_NAME + ":" + rpcRequest.getInterfaceName());
+        }
+
+        if (rpcResponse.getCode() == null || !rpcResponse.getCode().equals(RpcResponseCodeEnum.SUCCESS.getCode())) {
+            throw new RpcException(RpcErrorMessageEnum.SERVICE_INVOCATION_FAILURE, INTERFACE_NAME + ":" + rpcRequest.getInterfaceName());
+        }
     }
 }

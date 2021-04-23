@@ -79,6 +79,7 @@ public final class CuratorUtils {
         try {
             result = zkClient.getChildren().forPath(servicePath);
             SERVICE_ADDRESS_MAP.put(rpcServiceName, result);
+            // 首次查询时，注册事件，监听所有子节点。若有改变，发生回调，这里每次都触发
             registerWatcher(rpcServiceName, zkClient);
         } catch (Exception e) {
             log.error("get children nodes for path [{}] fail", servicePath);
@@ -134,7 +135,7 @@ public final class CuratorUtils {
     }
 
     /**
-     * 对特定节点的变化进行注册监听
+     * 对特定节点的变化进行注册监听(每次都会触发)
      * @param rpcServiceName rpc服务名称
      * @param zkClient
      * @throws Exception
