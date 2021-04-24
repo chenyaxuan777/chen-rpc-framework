@@ -22,12 +22,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public final class ExtensionLoader<T> {
     // 指定目录（该目录下放置配置文件）
     private static final String SERVICE_DIRECTORY = "META-INF/extensions/";
-    // ExtensionLoader的缓存
+    // ExtensionLoader的缓存 接口.class,ExtensionLoader
     private static final Map<Class<?>, ExtensionLoader<?>> EXTENSION_LOADERS = new ConcurrentHashMap<>();
     //
     private static final Map<Class<?>, Object> EXTENSION_INSTANCES = new ConcurrentHashMap<>();
 
     private final Class<?> type;
+    // 接口实现类的实例的缓存 "zk",zk实例
     private final Map<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<>();
     //
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<>();
@@ -184,10 +185,5 @@ public final class ExtensionLoader<T> {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-    }
-
-    public static void main(String[] args) {
-        String str = "ad132";
-        System.out.println(str.indexOf('#'));
     }
 }
